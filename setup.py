@@ -1,0 +1,21 @@
+from setuptools import setup, find_packages
+  
+setup(name='napalib',
+      version="0.1.0",
+      packages=find_packages(include=["napalib",
+                                      "napalib/RMSD",
+                                      "napalib/dihedrals",
+                                      "napalib/system"]),
+      package_data={"napalib": ["system/if_crystal_ref.pdb",
+                                "system/if_ref.gro",
+                                "system/occ_ref.gro",
+                                "system/of_crystal_ref.pdb"]},
+      install_requires=["numpy",
+                        "matplotlib",
+                        "MDAnalysis",
+                        "xarray",
+                        "sklearn",
+                        "seaborn",
+                        "numkit",
+                        "netcdf4"],
+)
