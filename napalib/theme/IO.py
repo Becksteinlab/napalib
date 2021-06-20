@@ -6,8 +6,10 @@ def to_bendix_helix_file(filename: Path):
     """Create a file containing the helix residue definitions that can be read using the Bendix plugin in VMD.
     The helix definitions are only defined for a single protomer.
 
+    Parameters
+    ----------
     filename: Path
-        Path of helix file
+        Path of output helix file.
     """
 
     helices = NapAUniverse.core_helices + NapAUniverse.dimer_helices + NapAUniverse.cross_helix
@@ -25,8 +27,14 @@ def to_bendix_helix_file(filename: Path):
 def to_bendix_color_file(filename: Path, dimmed=False):
     """Create a file containing helix color definitions that can be read using the Bendix plugin in VMD.
 
+    The colors need to be overwritten in VMD if you're not happy with a violet, magenta, and orange color-scheme.
+
+    Parameters
+    ----------
     filename: Path
-        Path of color file
+        Path of output color file.
+    dimmed: bool
+        Whether or not to use the dimmed variant of the color scheme.
     """
 
     _colors = {'core': "violet2",
@@ -53,9 +61,12 @@ def to_bendix_color_file(filename: Path, dimmed=False):
         F.write(contents)
 
 def joining_residue_selections():
-    """Return the selection schemes for mixed coloring of joining residues.
+    """Assign non-helix secondary structure residues to a domain depending on the residues distance to those domains.
 
-    :return: (str, str, str)
+    Returns
+    -------
+    (str, str, str)
+        VMD readable selection strings for the core, dimer, and cross-domain loops.
     """
 
     all_helices = NapAUniverse.core_helices + NapAUniverse.dimer_helices + NapAUniverse.cross_helix
@@ -65,6 +76,19 @@ def joining_residue_selections():
     cross = "resid "
 
     def closest_domain(res):
+        """Determine the closest domain to a residue.
+
+        Parameters
+        ----------
+        res: int
+            Resid
+
+        Returns
+        -------
+        str
+            Domain closest to the residue with resid res.
+
+        """
         closest_distance = 385
         _closest_domain = None
 
@@ -91,9 +115,9 @@ def joining_residue_selections():
 
         return _closest_domain
 
-    def in_helix(res):
+    def in_helix(res, depth=2):
         for lower, upper in all_helices:
-            if res >= (lower+2) and res <= (upper - 2):
+            if res >= (lower+depth) and res <= (upper - depth):
                 return True
         return False
 

@@ -209,12 +209,36 @@ trajectories[-1].add_chunk(Trajchunk("IF", 0, -1, 'B'))
 
 
 def search_trajectories(traj_label):
+    """Find a trajectory given the name of the trajectory.
+
+    Parameters
+    ----------
+    traj_label: str
+        Name of the trajectory.
+
+    Returns
+    -------
+    Trajectory
+        Trajectory object with the specified label
+    """
     for trajectory in trajectories:
         if trajectory.name() == traj_label:
             return trajectory
 
 
 def search_substates(substate):
+    """Find all trajectory chunks that exist in the specified substate.
+
+    Parameters
+    ----------
+    substate: str
+        Substate to be matched.
+
+    Returns
+    -------
+    [Trajchunk]
+        All trajectory chunks in the specified substate.
+    """
     states = []
     for trajectory in trajectories:
         for chunk in trajectory.chunks['A']:

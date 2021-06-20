@@ -1,8 +1,10 @@
 import MDAnalysis as mda
 import numpy as np
 
+from MDAnalysis.core import topologyattrs
 
-class SecondaryStructure(mda.core.topologyattrs.ResidueAttr):
+
+class SecondaryStructure(topologyattrs.ResidueAttr):
     attrname = "structures"
     singular = "structure"
     dtype = object
@@ -12,7 +14,7 @@ class SecondaryStructure(mda.core.topologyattrs.ResidueAttr):
         return np.array(['' for _ in range(nr)], dtype=object)
 
 
-class Helix(mda.core.topologyattrs.ResidueAttr):
+class Helix(topologyattrs.ResidueAttr):
     attrname = "helices"
     singular = "helix"
     dtype = object
@@ -22,7 +24,7 @@ class Helix(mda.core.topologyattrs.ResidueAttr):
         return np.array(['' for _ in range(nr)], dtype=object)
 
 
-class Domain(mda.core.topologyattrs.ResidueAttr):
+class Domain(topologyattrs.ResidueAttr):
     attrname = "domains"
     singular = "domain"
     dtype = object
@@ -85,11 +87,11 @@ class NapAUniverse(mda.Universe):
 
     @staticmethod
     def _get_domain(resid):
-        for lower, upper in self.core_helices:
+        for lower, upper in NapAUniverse.core_helices:
             if resid >= lower or resid <= upper:
                 return "core"
 
-        for lower, upper in self.dimer_helices:
+        for lower, upper in NapAUniverse.dimer_helices:
             if resid >= lower or resid <= upper:
                 return "dimer"
 
@@ -109,8 +111,8 @@ class NapAUniverse(mda.Universe):
         self._bind_domain()
 
     def _fix_topology(self):
-
-        # Need to make things consistent for DMS, GRO, TPR, PDB
+        """Make the topology consistent between multiple filetypes.
+        """
 
         protein = self.select_atoms("protein")
         nres = len(protein.residues)
@@ -142,29 +144,32 @@ class NapAUniverse(mda.Universe):
 
         elif self.format == "gro":
             # GRO files need to have the segids added explicitly
-            A = self.add_Segment(segid='A')
-            B = self.add_Segment(segid='B')
-            protein.residues[:int(nres / 2)].segments = A
-            protein.residues[int(nres / 2):].segments = B
+            a = self.add_Segment(segid='A')
+            b = self.add_Segment(segid='B')
+            protein.residues[:int(nres / 2)].segments = a
+            protein.residues[int(nres / 2):].segments = b
 
         elif self.format == "pdb":
             # PDBs are only really going to be the crystal structures...
             pass
 
         if self.format != "pdb":
-            A = self.select_atoms("segid A")
-            B = self.select_atoms("segid B")
+            a = self.select_atoms("segid A")
+            b = self.select_atoms("segid B")
 
-            for i, j in zip(A.residues, B.residues):
+            for i, j in zip(a.residues, b.residues):
                 if not self.mutant:
                     assert i.resname == j.resname
                 assert i.resid == j.resid
 
-            assert len(A.residues) == len(B.residues)
+            assert len(a.residues) == len(b.residues)
         else:
             pass
 
     def _bind_secondary_structure(self):
+        """Assign either loop or helix to each residue.
+
+        """
         values = ["" for _ in range(len(self.residues))]
         self.add_TopologyAttr(SecondaryStructure(values))
 
@@ -177,6 +182,9 @@ class NapAUniverse(mda.Universe):
             prot.residues[prot.residues.resids == t].structures = "helix"
 
     def _bind_helix_names(self):
+        """Assign helix names to each residue.
+
+        """
         values = ["" for _ in range(len(self.residues))]
         self.add_TopologyAttr(Helix(values))
 
@@ -194,34 +202,38 @@ class NapAUniverse(mda.Universe):
                     prot.residues[prot.residues.resids == t].helices = name
 
     def _bind_domain(self):
+        """Assign the domain to each residue.
+
+        """
         values = ["" for _ in range(len(self.residues))]
         self.add_TopologyAttr(Domain(values))
 
-        prot = self.select_atoms("protein")
+        protomer = self.select_atoms("protein")
 
         for name in self.dimer_helix_names:
-            prot.residues[prot.residues.helices == name].domains = "dimer"
+            protomer.residues[protomer.residues.helices == name].domains = "dimer"
 
         for name in self.core_helix_names:
-            prot.residues[prot.residues.helices == name].domains = "core"
+            protomer.residues[protomer.residues.helices == name].domains = "core"
 
         for name in self.cross_helix_name:
-            prot.residues[prot.residues.helices == name].domains = "neither"
-
-    def load_states(self, csv, stride=1):
-        raise NotImplementedError
-        data = []
-        self.states = {}
-        with open(csv, 'r') as F:
-            for line in F:
-                frame, state = line.strip().split(",")
-                frame = int(frame)
-                data.append((frame, state))
-
-        data = np.array(data, dtype=str)[:, 1, stride]
-        self.states = data
+            protomer.residues[protomer.residues.helices == name].domains = "neither"
 
     def domain_select(self, protomer, domain):
+        """Select an AtomGroup from a given domain in a given protomer.
+
+        Parameters
+        ----------
+        protomer: str
+            Protomer to select the atom group from. This can be either "A" or "B"
+        domain: str
+            Domain name. This can be either "core", "dimer", or "neither".
+
+        Returns
+        -------
+        AtomGroup
+            Atom group from selection
+        """
         if self.format == "pdb":
             protomer = "A"
         ag = self.select_atoms("protein and segid " + protomer)
