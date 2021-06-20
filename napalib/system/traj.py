@@ -159,6 +159,8 @@ for i in [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20]:
 # low temp runs
 
 def sort_parts(traj_list):
+    print(traj_list)
+    print(traj_list[0].split(".")[1][4:])
     traj_list.sort(key=lambda x: int(x.split(".")[1][4:]))
     return traj_list
 
@@ -167,15 +169,16 @@ for i in range(1, 11):
     for c in ["inward", "outward"]:
         conf = "if" if c == "inward" else "of"
         top = f"/nfs/homes4/Projects/NapA/Anton2/workspaces/ikenney/s2_310/{c}/equilibration/gromacs/step6.6_equilibration.gro"
-        _traj_list = glob(f"/nfs/homes4/Projects/NapA/Anton2/workspaces/ikenney/s2_310/inward/production/{str(i).rjust(2, str(0))}/*.xtc")
+        # _traj_list = glob(f"/nfs/homes4/Projects/NapA/Anton2/workspaces/ikenney/s2_310/inward/production/{str(i).rjust(2, str(0))}/*.xtc")
+        traj = f"/nfs/homes4/Projects/NapA/Anton2/workspaces/ikenney/s2_310/inward/production/{str(i).rjust(2, str(0))}/production.xtc"
 
-        if not _traj_list:
-            continue
+        # if not _traj_list:
+        #     continue
 
-        _traj_list = sort_parts(_traj_list)
+        # _traj_list = sort_parts(_traj_list)
 
         trajectories.append(Trajectory(top,
-                                       _traj_list,
+                                       traj,
                                        f"g_{c}_{i}_s2_310"))
         trajectories[-1].add_chunk(Trajchunk(conf.upper(), 0, -1, 'A'))
         trajectories[-1].add_chunk(Trajchunk(conf.upper(), 0, -1, 'B'))
