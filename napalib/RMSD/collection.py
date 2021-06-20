@@ -99,8 +99,6 @@ def extract_RMSD(TOP, TRR, filename, mutant=False):
 
     protein_AG = u.select_atoms("protein and name CA")
 
-    print(f"Collecting {TOP}")
-
     for frame, ts in enumerate(u.trajectory):
         for alignment in da.coords["alignment"].data:
             for selection in da.coords["selection"].data:

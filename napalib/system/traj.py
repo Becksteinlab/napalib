@@ -170,7 +170,7 @@ for i in range(1, 11):
         conf = "if" if c == "inward" else "of"
         top = f"/nfs/homes4/Projects/NapA/Anton2/workspaces/ikenney/s2_310/{c}/equilibration/gromacs/step6.6_equilibration.gro"
         # _traj_list = glob(f"/nfs/homes4/Projects/NapA/Anton2/workspaces/ikenney/s2_310/inward/production/{str(i).rjust(2, str(0))}/*.xtc")
-        traj = f"/nfs/homes4/Projects/NapA/Anton2/workspaces/ikenney/s2_310/inward/production/{str(i).rjust(2, str(0))}/production.xtc"
+        traj = f"/nfs/homes4/Projects/NapA/Anton2/workspaces/ikenney/s2_310/{c}/production/{str(i).rjust(2, str(0))}/production.xtc"
 
         # if not _traj_list:
         #     continue
