@@ -60,6 +60,7 @@ def to_bendix_color_file(filename: Path, dimmed=False):
     with open(filename, 'w') as F:
         F.write(contents)
 
+
 def joining_residue_selections():
     """Assign non-helix secondary structure residues to a domain depending on the residues distance to those domains.
 
@@ -117,7 +118,7 @@ def joining_residue_selections():
 
     def in_helix(res, depth=2):
         for lower, upper in all_helices:
-            if res >= (lower+depth) and res <= (upper - depth):
+            if (lower + depth) <= res <= (upper - depth):
                 return True
         return False
 
@@ -134,3 +135,7 @@ def joining_residue_selections():
             cross += f"{residue} "
 
     return core, dimer, cross
+
+
+def base_vmd_scene(filename: Path):
+    raise NotImplementedError
