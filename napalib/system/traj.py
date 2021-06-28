@@ -1,6 +1,7 @@
 from napalib.system.universe import NapAUniverse
 from glob import glob
 
+
 class Trajchunk(object):
 
     def __init__(self, state, start, end, protomer):
@@ -33,6 +34,12 @@ class Trajectory(object):
         u = NapAUniverse(self.topology, mutant=True)
         u.load_new(self.trajectory)
         return u
+
+    def __str__(self):
+        return self.name()
+
+    def __repr__(self):
+        return self.name()
 
 
 trajectories = list()

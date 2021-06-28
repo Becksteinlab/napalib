@@ -101,7 +101,7 @@ class NapAUniverse(mda.Universe):
     def _expand(i, j):
         return [j for j in range(i, j + 1)]
 
-    def __init__(self, topology_file, mutant=False):
+    def __init__(self, topology_file: str, mutant=False):
         super().__init__(topology_file)
         self.format = topology_file.split('.')[-1]
         self.mutant = mutant
@@ -163,8 +163,6 @@ class NapAUniverse(mda.Universe):
                 assert i.resid == j.resid
 
             assert len(a.residues) == len(b.residues)
-        else:
-            pass
 
     def _bind_secondary_structure(self):
         """Assign either loop or helix to each residue.
