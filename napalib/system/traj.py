@@ -1,5 +1,8 @@
 from napalib.system.universe import NapAUniverse
-from glob import glob
+import MDAnalysis as mda
+from tqdm import tqdm
+from pathlib import Path
+from functools import reduce
 
 
 class Trajchunk(object):
@@ -34,6 +37,57 @@ class Trajectory(object):
         u = NapAUniverse(self.topology, mutant=True)
         u.load_new(self.trajectory)
         return u
+
+    def write_reduced(self, dirname: Path, ions=True, water=False, lipids=False, stride=100, start=None, stop=None, verbose=True):
+        """Write a reduced topology and trajectory into a directory.
+
+        Parameters
+        ----------
+        dirname: Path
+            Path to directory where files will be written.
+        ions: bool
+            Whether to include ions.
+        water: bool
+            Whether to include water.
+        lipids: bool
+            Whether to include lipids.
+        stride: int
+            Frame stride for write out.
+        start: int
+            Starting frame.
+        stop: int
+            Ending frame.
+        verbose: bool
+            Whether to use a progress bar.
+        """
+        u = self.universe()
+
+        if not isinstance(dirname, Path):
+            dirname = Path(dirname)
+
+        dirname.mkdir(exist_ok=True, parents=True)
+        top_file = dirname / "top.gro"
+        traj_file = dirname / "traj.xtc"
+
+        protein_sel = u.select_atoms("protein")
+        lipids_sel = u.select_atoms("resname POPE POPG")
+        water_sel = u.select_atoms("resname TIP3")
+        ions_sel = u.select_atoms("resname SOD CLA")
+
+        selections = [(protein_sel, True),
+                      (lipids_sel, lipids),
+                      (water_sel, water),
+                      (ions_sel, ions)]
+
+        included = list(filter(lambda x: x[1], selections))
+        atoms = reduce(lambda x, y: x[0] + y[0], included)
+
+        atoms.write(top_file)
+
+        with mda.Writer(str(traj_file), atoms.n_atoms) as W:
+            for ts in tqdm(u.trajectory[start:stop:stride], disable=(not verbose)):
+                W.write(atoms)
+
 
     def __str__(self):
         return self.name()
