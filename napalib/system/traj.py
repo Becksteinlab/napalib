@@ -229,7 +229,7 @@ def sort_parts(traj_list):
 for i in range(1, 11):
     for c in ["inward", "outward"]:
         conf = "if" if c == "inward" else "of"
-        top = f"/nfs/homes4/Projects/NapA/Anton2/workspaces/ikenney/s2_310/{c}/equilibration/gromacs/step6.6_equilibration.gro"
+        top = f"/nfs/homes4/Projects/NapA/Anton2/workspaces/ikenney/s2_310/{c}/production/{str(i).rjust(2, str(0))}/md.tpr"
         # _traj_list = glob(f"/nfs/homes4/Projects/NapA/Anton2/workspaces/ikenney/s2_310/inward/production/{str(i).rjust(2, str(0))}/*.xtc")
         traj = f"/nfs/homes4/Projects/NapA/Anton2/workspaces/ikenney/s2_310/{c}/production/{str(i).rjust(2, str(0))}/production.xtc"
 
