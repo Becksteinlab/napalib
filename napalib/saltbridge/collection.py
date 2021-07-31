@@ -3,6 +3,7 @@ from napalib.system.universe import NapAUniverse
 import numpy as np
 import xarray as xr
 from tqdm import tqdm
+from pathlib import Path
 
 from .toptools import get_charged_residues, collection_scheme
 
@@ -51,8 +52,13 @@ def collect(topology, trajectory, datafile_prefix, mutant=False):
             i = j // N_neg_B
             k = j % N_neg_B
             da_B[frame, i, k] = pair.calculate_separation()
-    # TODO these should really be writing to distancedata/
-    da_A.to_netcdf(datafile_prefix + "_A.nc")
-    da_B.to_netcdf(datafile_prefix + "_B.nc")
+
+    distancedata_dir = Path.cwd() / "distancedata"
+
+    A_file = distancedata_dir / (datafile_prefix + "_A.nc")
+    B_file = distancedata_dir / (datafile_prefix + "_B.nc")
+
+    da_A.to_netcdf(A_file)
+    da_B.to_netcdf(B_file)
 
     return da_A, da_B
