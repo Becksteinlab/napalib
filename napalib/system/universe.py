@@ -131,8 +131,15 @@ class NapAUniverse(mda.Universe):
             ids = list(protein.residues.resids % int(nres / 2) + 3)
             protein.residues.resids = ids
 
-            protein.residues[:ids[-1] - 1].segments.segids = "A"
-            protein.residues[ids[-1] - 1:].segments.segids = "B"
+            a = self.add_Segment(segid='A')
+            b = self.add_Segment(segid='B')
+
+            assert protein.residues.n_residues % 2 == 0
+
+            res_per_prot = int(protein.residues.n_residues / 2)
+
+            protein.residues[:res_per_prot].segments = a
+            protein.residues[res_per_prot:].segments = b
 
         elif self.format == "dms":
             # The most common problem with dms files is that the 
