@@ -1,5 +1,5 @@
-import MDAnalysis as mda
 from napalib.system.universe import NapAUniverse
+from napalib.system.traj import Trajectory
 import numpy as np
 import xarray as xr
 from tqdm import tqdm
@@ -7,7 +7,9 @@ from pathlib import Path
 
 from .toptools import get_charged_residues, collection_scheme
 
-import os
+
+def sep(atom1, atom2):
+    return np.linalg.norm(atom1.position - atom2.position)
 
 
 def collect(topology, trajectory, datafile_prefix, mutant=False):
@@ -25,7 +27,8 @@ def collect(topology, trajectory, datafile_prefix, mutant=False):
     # salt bridges formed. This means that we need to store the data in two
     # separate arrays
 
-    residues2str = lambda rg: [str(i) for i in rg]
+    def residues2str(rg):
+        return [str(i) for i in rg]
 
     pos_A = list(filter(lambda x: x.positive, charged_residues['A']))
     neg_A = list(filter(lambda x: x.negative, charged_residues['A']))
@@ -62,3 +65,61 @@ def collect(topology, trajectory, datafile_prefix, mutant=False):
     da_B.to_netcdf(B_file)
 
     return da_A, da_B
+
+
+def collect_305_156(trajectory: Trajectory):
+    """Collect the K305-D157 salt bridge for both protomers and write out to a numpy file.
+
+    This is potentially more useful than the standard collect function since it is protonation state independent.
+
+    """
+
+    u = trajectory.universe()
+
+    NZ_A, NZ_B = u.select_atoms("resid 305 and name NZ")
+    OD1_A, OD2_A, OD1_B, OD2_B = u.select_atoms("resid 156 and name OD1 OD2")
+
+    data = np.zeros((3, u.trajectory.n_frames), dtype=np.float32)  # time, A, B
+
+    for i, ts in tqdm(enumerate(u.trajectory), total=u.trajectory.n_frames):
+        data[0, i] = ts.time
+
+        distance_A = min(sep(NZ_A, OD1_A), sep(NZ_A, OD2_A))
+        distance_B = min(sep(NZ_B, OD1_B), sep(NZ_B, OD2_B))
+
+        data[1, i] = distance_A
+        data[2, i] = distance_B
+
+    datadir = Path.cwd() / "k305-d156-data"
+    datadir.mkdir(exist_ok=True, parents=True)
+
+    filename = datadir / f"{trajectory.name()}.npy"
+    np.save(filename, data)
+
+
+def collect_305_126(trajectory: Trajectory):
+    """While not a salt bridge, we are generally interested in what happens to K305 when the K305-D156 salt bridge is
+    broken.
+    """
+
+    u = trajectory.universe()
+
+    NZ_A, NZ_B = u.select_atoms("resid 305 and name NZ")
+    OG_A, OG_B = u.select_atoms("resid 126 and name OG1")
+
+    data = np.zeros((3, u.trajectory.n_frames), dtype=np.float32)
+
+    for i, ts in tqdm(enumerate(u.trajectory), total=u.trajectory.n_frames):
+        data[0, i] = ts.time
+
+        distance_A = sep(NZ_A, OG_A)
+        distance_B = sep(NZ_B, OG_B)
+
+        data[1, i] = distance_A
+        data[2, i] = distance_B
+
+    datadir = Path.cwd() / "k305-t126-data"
+    datadir.mkdir(exist_ok=True, parents=True)
+
+    filename = datadir / f"{trajectory.name()}.npy"
+    np.save(filename, data)
