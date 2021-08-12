@@ -5,6 +5,7 @@ import MDAnalysis as mda
 
 from napalib.system.universe import NapAUniverse
 from tqdm import tqdm
+from pathlib import Path
 
 import os
 
@@ -14,15 +15,17 @@ def select_from_string(ag, string):
     assert len(atoms) == 1
     return atoms[0]
 
-def collect(TOP, TRR, filename, dt=None, mutant=False):
-    
-    if os.path.exists(filename):
-        print(f"{filename} already exists, please delete and run again")
+def collect(trajectory, dt=None, mutant=False):
+
+    datadir = Path.cwd() / "data"
+    outfile = datadir / f"{trajectory}.nc"
+
+    if outfile.exists():
+        print(f"{trajectory}.nc already exists, please delete and run again")
         return -1
         
-    u = NapAUniverse(TOP, mutant=True)
-    u.load_new(TRR)
-    
+    u = trajectory.universe()
+
     N_frames = len(u.trajectory)
     
     if dt:
@@ -69,5 +72,5 @@ def collect(TOP, TRR, filename, dt=None, mutant=False):
                        'sod_idx': sodium_ag.indices,
                        })
                 
-    data.to_netcdf(filename)
+    data.to_netcdf(outfile)
     return data
