@@ -88,9 +88,66 @@ class Trajectory(object):
             for ts in tqdm(u.trajectory[start:stop:stride], disable=(not verbose)):
                 W.write(atoms)
 
+    @property 
+    def is_inward(self):
+        _inward = 'inward' in self.name()
+        _if = '_if_' in self.name()
+        _ifm = '_ifm_' in self.name()
+        return _inward or _if or _ifm
+
+    @property
+    def is_outward(self):
+        _outward = 'outward' in self.name()
+        _of = '_of_' in self.name()
+        return _outward or _of
+
+    @property
+    def is_occluded(self):
+        _OCC = '_OCC_' in self.name()
+        return _OCC 
+
+    @property
+    def has_s2(self):
+        return 's2' in self.name()
+
+    @property
+    def has_s1(self):
+        return not self.has_s2
+
+    @property
+    def has_s4(self):
+        return self.has_s1
+
+    @property
+    def is_310(self):
+        return '310' in self.name()
+
+    @property
+    def is_358(self):
+        return not self.is_310
+
+    @property
+    def if_s2_310(self):
+        return self.is_inward and self.has_s2 and self.is_310
+
+
+    @property
+    def if_s4_310(self):
+        return self.is_inward and self.has_s4 and self.is_310
+
+    @property
+    def of_s2_310(self):
+        return self.is_outward and self.has_s2 and self.is_310
+
+
+    @property
+    def of_s4_310(self):
+        return self.is_outward and self.has_s4 and self.is_310
+
 
     def __str__(self):
         return self.name()
+
 
     def __repr__(self):
         return self.name()
@@ -244,6 +301,18 @@ for i in range(1, 11):
         trajectories[-1].add_chunk(Trajchunk(conf.upper(), 0, -1, 'A'))
         trajectories[-1].add_chunk(Trajchunk(conf.upper(), 0, -1, 'B'))
 
+for i in range(1, 4):
+    for c in ['inward', 'outward']:
+        conf = 'if' if c == 'inward' else 'of'
+        top = f'/nfs/homes4/Projects/NapA/Anton2/workspaces/ikenney/s2_simulations/{c}/{str(i).rjust(2,str(0))}/gromacs/md.tpr'
+        traj = f'/nfs/homes4/Projects/NapA/Anton2/workspaces/ikenney/s2_simulations/{c}/{str(i).rjust(2,str(0))}/gromacs/production.xtc'
+
+        trajectories.append(Trajectory(top,
+                                       traj,
+                                       f'g_{c}_{i}_s2'))
+        trajectories[-1].add_chunk(Trajchunk(conf.upper(), 0, -1, 'A'))
+        trajectories[-1].add_chunk(Trajchunk(conf.upper(), 0, -1, 'B'))
+
 # a_of_0_310
 trajectories.append(Trajectory("/nfs/homes4/Projects/NapA/Anton2/traj/processed/direct/310/OF_WT/0/top.dms",
                                "/nfs/homes4/Projects/NapA/Anton2/traj/processed/direct/310/OF_WT/0/production.trr",
@@ -311,3 +380,27 @@ def search_substates(substate):
                 states.append(chunk)
 
     return states
+
+
+def is_310(traj):
+    return '310' in traj.name()
+
+
+def is_358(traj):
+    return not is_310(traj)
+
+
+def is_inward(traj):
+    return 'inward' in traj.name() or 'if' in traj.name()
+
+
+def is_outward(traj):
+    return 'outward' in traj.name() or 'of' in traj.name()
+
+
+def is_inward_310(traj):
+    return is_310(traj) and is_inward(traj)
+
+
+def is_outward_310(traj):
+    return is_310(traj) and is_outward(traj)

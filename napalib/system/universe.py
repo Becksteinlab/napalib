@@ -268,3 +268,11 @@ class NapAUniverse(mda.Universe):
     @property
     def neither_B(self):
         return self.domain_select("B", "neither")
+
+    @property
+    def helices_A(self):
+        return self.core_A + self.dimer_A + self.neither_A
+
+    @property
+    def helices_B(self):
+        return self.core_B + self.dimer_B + self.neither_B
