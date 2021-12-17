@@ -46,6 +46,11 @@ class Trajectory(object):
         self.chunks = {'A': [],
                        'B': []}
 
+    def exists(self):
+        topfile = Path(self.topology)
+        trajfile = Path(self.trajectory)
+        return topfile.exists() and trajfile.exists()
+
     def name(self, protomer=None):
         if protomer:
             return f"{self._name}_{protomer}"
