@@ -122,8 +122,8 @@ class NapAUniverse(mda.Universe):
             # This code will needed to be edited if this ever fails
             assert len(protein.residues) - 1 == protein.residues[-1].resnum
 
-            # TPRs have extended resids instead of the intended wrapping 
-            # effect for the two protomers. 
+            # TPRs have extended resids instead of the intended wrapping
+            # effect for the two protomers.
             nres = len(protein.residues)
             assert protein.resids[0] == 0
             assert protein.resids[-1] == nres - 1
@@ -142,7 +142,7 @@ class NapAUniverse(mda.Universe):
             protein.residues[res_per_prot:].segments = b
 
         elif self.format == "dms":
-            # The most common problem with dms files is that the 
+            # The most common problem with dms files is that the
             # segids have not been changed to reflect the chains
             # also check that the development branch is installed
 
