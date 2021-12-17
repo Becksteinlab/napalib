@@ -1,15 +1,13 @@
-import MDAnalysis as mda
-from MDAnalysis.analysis.dihedrals import Dihedral
 from MDAnalysis.core.groups import AtomGroup
-import xarray as xr
-import numpy as np
-import os.path
+
 
 def phi_pairs(RG):
     return list(zip(RG[1:-1], RG[:-2]))
 
+
 def psi_pairs(RG):
     return list(zip(RG[1:-1], RG[2:]))
+
 
 def get_chi_ag(residue):
     if residue.resname in ("ALA", "GLY"):
@@ -34,12 +32,14 @@ def get_chi_ag(residue):
         raise ValueError("wrong number in selection")
     return ag
 
+
 def get_phi_ag(pair):
     previous = pair[1].atoms
     current = pair[0].atoms
     prev_c = list(previous.select_atoms("backbone and name C"))
     others = list(current.select_atoms("backbone and not name O"))
-    return AtomGroup(prev_c+others)
+    return AtomGroup(prev_c + others)
+
 
 def get_psi_ag(pair):
     following = pair[1].atoms

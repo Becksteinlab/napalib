@@ -1,6 +1,5 @@
 from pkg_resources import resource_filename
 from napalib.system.universe import NapAUniverse
-import os
 
 IF_ref = resource_filename(__name__, 'if_ref.gro')
 IF_crystal_ref = resource_filename(__name__, 'if_crystal_ref.pdb')

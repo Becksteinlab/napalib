@@ -1,7 +1,6 @@
 import xarray as xr
 import numpy as np
 
-import MDAnalysis as mda
 from MDAnalysis.analysis import rms
 from MDAnalysis.analysis import align
 import os
@@ -96,8 +95,6 @@ def extract_RMSD(TOP, TRR, filename, mutant=False):
 
     maas = msas
     raas = rsas
-
-    protein_AG = u.select_atoms("protein and name CA")
 
     for frame, ts in enumerate(u.trajectory):
         for alignment in da.coords["alignment"].data:
