@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "napalib"
+version = "0.1.0"
+description = ""
+authors = ["Ian Kenney <ikenney@asu.edu>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8,<3.11"
+numpy = "^1.21.4"
+matplotlib = "^3.5.1"
+MDAnalysis = ">=2.0.0"
+xarray = "^0.20.2"
+sklearn = "^0.0"
+seaborn = "^0.11.2"
+numkit = "^1.2.2"
+netCDF4 = "^1.5.8"
+PyYAML = "^6.0"
+
+[tool.poetry.dev-dependencies]
+ipython = "^7.30.1"
+pytest = "^6.2.5"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
