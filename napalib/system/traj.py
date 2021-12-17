@@ -14,6 +14,26 @@ class Trajchunk(object):
         self.protomer = protomer
         self.trajectory = None
 
+    def to_dict(self):
+        """Get dictionary representation of a Trajchunk.
+        """
+        export = {}
+        export['state'] = self.state
+        export['start'] = self.start
+        export['end'] = self.end
+        export['protomer'] = self.protomer
+        return export
+
+    @staticmethod
+    def from_dict(data):
+        """Create a Trajchunk from its dictionary representation.
+        """
+        state = str(data['state'])
+        start = int(data['start'])
+        end = int(data['end'])
+        prot = str(data['protomer'])
+        return Trajchunk(state, start, end, prot)
+
 
 class Trajectory(object):
 
@@ -88,7 +108,46 @@ class Trajectory(object):
             for ts in tqdm(u.trajectory[start:stop:stride], disable=(not verbose)):
                 W.write(atoms)
 
-    @property 
+    def to_dict(self):
+        """Get dictionary representation of a trajectory.
+        """
+        export = {}
+
+        export['name'] = self._name
+        export['top'] = self.topology
+        export['traj'] = self.trajectory
+        export['chunks'] = []
+
+        for chunk in (self.chunks['A'] + self.chunks['B']):
+            export['chunks'].append(chunk.to_dict())
+
+        return export
+
+    @staticmethod
+    def from_dict(data):
+        """Create Trajectory from its dictionary representation.
+
+        Parameters
+        ----------
+        data : TODO
+
+        Returns
+        -------
+        TODO
+
+        """
+        name = str(data['name'])
+        topology = str(data['top'])
+        trajectory = str(data['traj'])
+        chunks = data['chunks']
+
+        traj = Trajectory(topology, trajectory, name)
+        for chunk in chunks:
+            traj.add_chunk(Trajchunk.from_dict(chunk))
+
+        return traj
+
+    @property
     def is_inward(self):
         _inward = 'inward' in self.name()
         _if = '_if_' in self.name()
@@ -104,7 +163,7 @@ class Trajectory(object):
     @property
     def is_occluded(self):
         _OCC = '_OCC_' in self.name()
-        return _OCC 
+        return _OCC
 
     @property
     def has_s2(self):
@@ -130,7 +189,6 @@ class Trajectory(object):
     def if_s2_310(self):
         return self.is_inward and self.has_s2 and self.is_310
 
-
     @property
     def if_s4_310(self):
         return self.is_inward and self.has_s4 and self.is_310
@@ -139,15 +197,12 @@ class Trajectory(object):
     def of_s2_310(self):
         return self.is_outward and self.has_s2 and self.is_310
 
-
     @property
     def of_s4_310(self):
         return self.is_outward and self.has_s4 and self.is_310
 
-
     def __str__(self):
         return self.name()
-
 
     def __repr__(self):
         return self.name()
