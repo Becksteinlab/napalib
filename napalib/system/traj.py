@@ -88,7 +88,7 @@ class Trajectory(object):
             for ts in tqdm(u.trajectory[start:stop:stride], disable=(not verbose)):
                 W.write(atoms)
 
-    @property 
+    @property
     def is_inward(self):
         _inward = 'inward' in self.name()
         _if = '_if_' in self.name()
@@ -104,7 +104,7 @@ class Trajectory(object):
     @property
     def is_occluded(self):
         _OCC = '_OCC_' in self.name()
-        return _OCC 
+        return _OCC
 
     @property
     def has_s2(self):
@@ -130,7 +130,6 @@ class Trajectory(object):
     def if_s2_310(self):
         return self.is_inward and self.has_s2 and self.is_310
 
-
     @property
     def if_s4_310(self):
         return self.is_inward and self.has_s4 and self.is_310
@@ -139,15 +138,12 @@ class Trajectory(object):
     def of_s2_310(self):
         return self.is_outward and self.has_s2 and self.is_310
 
-
     @property
     def of_s4_310(self):
         return self.is_outward and self.has_s4 and self.is_310
 
-
     def __str__(self):
         return self.name()
-
 
     def __repr__(self):
         return self.name()
