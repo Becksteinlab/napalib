@@ -3,7 +3,7 @@ name = "napalib"
 version = "0.1.0"
 description = ""
 authors = ["Ian Kenney <ikenney@asu.edu>"]
-license = "MIT"
+license = "GPL3"
 
 [tool.poetry.dependencies]
 python = "^3.8,<3.11"
