@@ -286,27 +286,3 @@ def search_substates(substate):
                 states.append(chunk)
 
     return states
-
-
-def is_310(traj):
-    return '310' in traj.name()
-
-
-def is_358(traj):
-    return not is_310(traj)
-
-
-def is_inward(traj):
-    return 'inward' in traj.name() or 'if' in traj.name()
-
-
-def is_outward(traj):
-    return 'outward' in traj.name() or 'of' in traj.name()
-
-
-def is_inward_310(traj):
-    return is_310(traj) and is_inward(traj)
-
-
-def is_outward_310(traj):
-    return is_310(traj) and is_outward(traj)
