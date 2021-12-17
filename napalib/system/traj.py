@@ -3,6 +3,7 @@ import MDAnalysis as mda
 from tqdm import tqdm
 from pathlib import Path
 from functools import reduce
+from yaml import Loader, load
 
 
 class Trajchunk(object):
@@ -126,15 +127,6 @@ class Trajectory(object):
     @staticmethod
     def from_dict(data):
         """Create Trajectory from its dictionary representation.
-
-        Parameters
-        ----------
-        data : TODO
-
-        Returns
-        -------
-        TODO
-
         """
         name = str(data['name'])
         topology = str(data['top'])
@@ -206,6 +198,25 @@ class Trajectory(object):
 
     def __repr__(self):
         return self.name()
+
+
+def trajectories_from_file(filename):
+    """Load trajectory from YAML file.
+
+    Parameters
+    ----------
+    filename : str
+        Path to the YAML file containing trajectory definitions.
+
+    Returns
+    -------
+    list
+        List of trajectory objects
+    """
+    with open(filename, 'r') as F:
+        data = load(F, Loader)
+
+    return [Trajectory.from_dict(d) for d in data]
 
 
 trajectories = list()
