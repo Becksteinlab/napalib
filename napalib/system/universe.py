@@ -118,18 +118,15 @@ class NapAUniverse(mda.Universe):
         nres = len(protein.residues)
 
         if self.format == "tpr":
-            # This is typically the condition that we see with TPRs.
-            # This code will needed to be edited if this ever fails
-            assert len(protein.residues) - 1 == protein.residues[-1].resnum
-
             # TPRs have extended resids instead of the intended wrapping
             # effect for the two protomers.
             nres = len(protein.residues)
-            assert protein.resids[0] == 0
-            assert protein.resids[-1] == nres - 1
+            unwrapped_range = np.array(list(range(nres)))
+
             # split in two even parts and offset by 3
-            ids = list(protein.residues.resids % int(nres / 2) + 3)
-            protein.residues.resids = ids
+            # ids = list(protein.residues.resids % int(nres / 2) + 3)
+            wrapped_ids = list(unwrapped_range % int(nres / 2) + 3)
+            protein.residues.resids = wrapped_ids
 
             a = self.add_Segment(segid='A')
             b = self.add_Segment(segid='B')
