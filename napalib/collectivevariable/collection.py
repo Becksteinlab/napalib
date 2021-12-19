@@ -3,7 +3,6 @@ from napalib.system.universe import NapAUniverse
 from MDAnalysis.analysis import align
 from MDAnalysis.analysis.leaflet import LeafletFinder
 import xarray as xr
-import numpy as np
 import os
 
 from tqdm import tqdm
@@ -19,6 +18,7 @@ def get_z(core_ag, dimer_ag):
     """
     return core_ag.center_of_mass()[2] - dimer_ag.center_of_mass()[2]
 
+
 def get_z_memb(domain_ag, memb_ag):
     """Returns the difference between the dimerisation domain and membrane
     centers of mass.
@@ -29,10 +29,11 @@ def get_z_memb(domain_ag, memb_ag):
     """
     return domain_ag.center_of_mass()[2] - memb_ag.center_of_mass()[2]
 
+
 def get_dz(dimer_bundle_va, core_bundle_va):
     """Return the difference between the two virtual atoms of the dimer
     bundle and the core bundle.
-    
+
     Parameters:
     dimer_bundle_va (numpy array): Position of the virtual atom defining
                                    the dimer bundle
@@ -41,9 +42,10 @@ def get_dz(dimer_bundle_va, core_bundle_va):
     """
     return core_bundle_va[2] - dimer_bundle_va[2]
 
+
 def get_theta(top_core_va, bot_core_va, bot_dimer_va):
     """Returns the delta-theta angle.
-    
+
     Parameters:
     top_core_va (numpy array): Position of the virtual atom defining the
                                top of the core domain.
@@ -60,8 +62,7 @@ def get_theta(top_core_va, bot_core_va, bot_dimer_va):
     a_12 = a_1 - a_2
     a_32 = a_3 - a_2
 
-    return np.rad2deg(np.arccos( (a_12 / np.linalg.norm(a_12)).dot(a_32 / np.linalg.norm(a_32)) ))
-
+    return np.rad2deg(np.arccos((a_12 / np.linalg.norm(a_12)).dot(a_32 / np.linalg.norm(a_32))))
 
 
 def get_phi(ref_dimer_ag, ref_core_ag, dimer_ag, core_ag):
@@ -86,10 +87,11 @@ def get_phi(ref_dimer_ag, ref_core_ag, dimer_ag, core_ag):
     both.rotate(R)
     both.translate(ref_dimer_ag.center_of_mass())
 
-    R, rmsd = align.rotation_matrix(core_ag.positions-core_ag.center_of_mass(),
-                                    ref_core_ag.positions-ref_core_ag.center_of_mass())
+    R, rmsd = align.rotation_matrix(core_ag.positions - core_ag.center_of_mass(),
+                                    ref_core_ag.positions - ref_core_ag.center_of_mass())
 
-    return np.arccos((R[0, 0]+R[1, 1]+R[2, 2]-1)/2) * 180/np.pi
+    return np.arccos((R[0, 0] + R[1, 1] + R[2, 2] - 1) / 2) * 180 / np.pi
+
 
 def get_normal_vector(leaflet):
     pos = leaflet.positions
@@ -103,11 +105,12 @@ def get_normal_vector(leaflet):
         normal = -normal
     return normal
 
+
 def get_normal_vector_MIT(leafelet):
     return leafelet.principal_axes()[0]
 
-def get_leaflets(u, cutoff=20):
 
+def get_leaflets(u, cutoff=20):
     memb = u.select_atoms("resname POPE POPG and name P")
 
     valid = False
@@ -137,6 +140,7 @@ def get_leaflets(u, cutoff=20):
 
     return upper, lower
 
+
 def normal_to_spherical_projection(normal):
 
     x, y, z = normal
@@ -148,7 +152,7 @@ def normal_to_spherical_projection(normal):
 
 
 def collect(top, traj, filename=None, mutant=False):
-    """Return a Dataset containing the timeseries of $\delta \phi$ and
+    r"""Return a Dataset containing the timeseries of $\delta \phi$ and
     $\delta Z$ in both protomers. Runs at roughly 60 it/sec.
 
     Parameters:
@@ -187,12 +191,6 @@ def collect(top, traj, filename=None, mutant=False):
 
     membrane_ag = u.select_atoms("resname POPG POPE")
 
-    core_ag_A = u.core_A
-    dimer_ag_A = u.dimer_A
-
-    core_ag_B = u.core_B
-    dimer_ag_B = u.dimer_B
-
     c_traj_A = u.core_A.select_atoms("name CA")
     c_traj_B = u.core_B.select_atoms("name CA")
     d_traj_A = u.dimer_A.select_atoms("name CA")
@@ -219,7 +217,8 @@ def collect(top, traj, filename=None, mutant=False):
     b1b = (c_traj_B + d_traj_B).select_atoms("resid 113-138 146-173 318-345")
     b2b = (c_traj_B + d_traj_B).select_atoms("resid 54-74 215-233 237-248 257-279")
 
-    com = lambda x: x.center_of_mass()
+    def com(x):
+        return x.center_of_mass()
 
     for i, ts in tqdm(enumerate(u.trajectory), total=len(u.trajectory)):
         # need to collect z first because get_phi changes state...

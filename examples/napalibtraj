@@ -1,0 +1,41 @@
+- tag: general
+- chunks:
+  - end: -1
+    protomer: A
+    start: 0
+    state: IF
+  - end: -1
+    protomer: B
+    start: 0
+    state: IF
+  name: a_if_0
+  top: /home/Anton2/traj/processed/direct/358/IF_WT/0/top.dms
+  traj: /home/Anton2/traj/processed/direct/358/IF_WT/0/production.trr
+- chunks:
+  - end: 4860
+    protomer: A
+    start: 0
+    state: OCC1
+  - end: 4999
+    protomer: A
+    start: 4861
+    state: OCC1-IF
+  - end: 17550
+    protomer: A
+    start: 5000
+    state: IF
+  - end: 19010
+    protomer: A
+    start: 17551
+    state: IF-OCC2
+  - end: -1
+    protomer: A
+    start: 19011
+    state: OCC2
+  - end: -1
+    protomer: B
+    start: 0
+    state: OF
+  name: a_occ_0
+  top: /home/Anton2/traj/processed/direct/358/OCC_WT/0/top.dms
+  traj: /home/Anton2/traj/processed/direct/358/OCC_WT/0/production.trr

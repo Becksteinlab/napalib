@@ -1,6 +1,4 @@
-import MDAnalysis as mda
 from napalib.system.universe import NapAUniverse
-# from napalib.system.definitions import get_domain
 import numpy as np
 
 charge_groups = {
@@ -16,7 +14,7 @@ negative = ["GLU", "ASP"]
 
 class Residue(object):
     def __init__(self, resname, resid):
-        if not resname in charge_groups.keys():
+        if resname not in charge_groups.keys():
             print("Could not find %s in valid residues" % resname)
             raise ValueError
         self.resname = resname
@@ -55,9 +53,6 @@ class Residue(object):
 
 
 class Pair(object):
-    """
-    
-    """
 
     def __init__(self, R1, R2):
         assert type(R1) is Residue
@@ -114,7 +109,6 @@ class PairList():
 
 def get_charged_residues(universe):
     """Returns a dictionary with the residue IDs from each protomer given the charge
-    
     """
     results = {"A": [], "B": []}
 
