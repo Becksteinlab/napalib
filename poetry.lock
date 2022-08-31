@@ -673,20 +673,21 @@ python-versions = "*"
 
 [[package]]
 name = "xarray"
-version = "0.20.2"
+version = "2022.6.0"
 description = "N-D labeled arrays and datasets in Python"
 category = "main"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 
 [package.dependencies]
-numpy = ">=1.18"
-pandas = ">=1.1"
+numpy = ">=1.19"
+packaging = ">=20.0"
+pandas = ">=1.2"
 
 [package.extras]
-accel = ["bottleneck", "numbagg", "scipy"]
-complete = ["bottleneck", "cfgrib", "cftime", "dask", "fsspec", "h5netcdf", "matplotlib", "nc-time-axis", "netcdf4", "numbagg", "pooch", "pydap", "rasterio", "scipy", "seaborn", "zarr"]
-docs = ["bottleneck", "cfgrib", "cftime", "dask", "fsspec", "h5netcdf", "ipykernel", "ipython", "jupyter-client", "matplotlib", "nbsphinx", "nc-time-axis", "netcdf4", "numbagg", "pooch", "pydap", "rasterio", "scanpydoc", "scipy", "seaborn", "sphinx-autosummary-accessors", "sphinx-rtd-theme", "zarr"]
+accel = ["bottleneck", "flox", "numbagg", "scipy"]
+complete = ["bottleneck", "cfgrib", "cftime", "dask", "flox", "fsspec", "h5netcdf", "matplotlib", "nc-time-axis", "netcdf4", "numbagg", "pooch", "pydap", "rasterio", "scipy", "seaborn", "zarr"]
+docs = ["bottleneck", "cfgrib", "cftime", "dask", "flox", "fsspec", "h5netcdf", "ipykernel", "ipython", "jupyter-client", "matplotlib", "nbsphinx", "nc-time-axis", "netcdf4", "numbagg", "pooch", "pydap", "rasterio", "scanpydoc", "scipy", "seaborn", "sphinx-autosummary-accessors", "sphinx-rtd-theme", "zarr"]
 io = ["cfgrib", "cftime", "fsspec", "h5netcdf", "netcdf4", "pooch", "pydap", "rasterio", "scipy", "zarr"]
 parallel = ["dask"]
 viz = ["matplotlib", "nc-time-axis", "seaborn"]
@@ -694,7 +695,7 @@ viz = ["matplotlib", "nc-time-axis", "seaborn"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8,<3.11"
-content-hash = "87b9f739fad5afd239a0876af8b1c340420034043190531789bfc95355ed89b2"
+content-hash = "13cb03ed92982ee551e8b066eb7f9c458f5c74bd5866ad4343279fe02f16e34d"
 
 [metadata.files]
 appnope = [
@@ -1340,6 +1341,6 @@ wcwidth = [
     {file = "wcwidth-0.2.5.tar.gz", hash = "sha256:c4d647b99872929fdb7bdcaa4fbe7f01413ed3d98077df798530e5b04f116c83"},
 ]
 xarray = [
-    {file = "xarray-0.20.2-py3-none-any.whl", hash = "sha256:048eee6036efd2a03e7eb3e91b5359c38da9e80aa6fa82def644a102d59bd78f"},
-    {file = "xarray-0.20.2.tar.gz", hash = "sha256:c2ebe80ca81b10a0241f6876dcc34ac9696e5c5cdcdf4758da7cf4bd732c41f7"},
+    {file = "xarray-2022.6.0-py3-none-any.whl", hash = "sha256:c052208afc3f261984049f28b962d64eb6741a7967898315642f5da85448b6b0"},
+    {file = "xarray-2022.6.0.tar.gz", hash = "sha256:1028d198493f66bb15bd35dcfdd11defd831cbee3af6589fff16f41bddd67e84"},
 ]
