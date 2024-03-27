@@ -6,10 +6,10 @@ authors = ["Ian Kenney <ikenney@asu.edu>"]
 license = "GPL3"
 
 [tool.poetry.dependencies]
-python = "^3.8,<3.11"
+python = "^3.8,<3.12"
 numpy = "^1.21.4"
 matplotlib = "^3.5.1"
-sklearn = "^0.0"
+scikit-learn = "^1.0"
 seaborn = "^0.11.2"
 numkit = "^1.2.2"
 netCDF4 = "^1.5.8"
